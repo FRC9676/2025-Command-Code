@@ -33,10 +33,11 @@ public class DriveSubsystem extends SubsystemBase {
 	/****************************************************
 	 * Kraken/TalonFX - drive motor variables
 	 ***************************************************/
-	private WPI_TalonFX m_leftLeader = new WPI_TalonFX(leftFrontDeviceID, "rio");
-	private WPI_TalonFX m_leftFollower = new TalonFX(leftRearDeviceID, "rio");
-	private TalonFX m_rightLeader = new TalonFX(rightFrontDeviceID);
-	private TalonFX m_rightFollower = new TalonFX(rightRearDeviceID);
+	private TalonFX m_leftLeader = new TalonFX(leftFrontDeviceID, "rio");
+	private TalonFX m_leftFollower = new TalonFX(leftRearDeviceID, "rio");
+	private TalonFX m_rightLeader = new TalonFX(rightFrontDeviceID, "rio");
+	private TalonFX m_rightFollower = new TalonFX(rightRearDeviceID, "rio");
+
 
   /****************************************************
 	 * Kraken/TalonFX - "sensor" aka encoder
@@ -50,6 +51,7 @@ public class DriveSubsystem extends SubsystemBase {
     * the leftConfiguration variable. This configuration object can later be used to set
     * specific parameters or settings for controlling the motor. Each side of the
     * drivetrain will have its own setup.*/
+
   leftDriveMotorGroup = new TalonFXConfiguration();
   rightDriveMotorGroup = new TalonFXConfiguration();  
 
@@ -65,12 +67,14 @@ public class DriveSubsystem extends SubsystemBase {
     * positive when it turns clockwise, essentially configuring the motor controller
     * to interpret clockwise rotation as positive and possibly affecting the direction
     * in which the motor operates.*/
+
   leftDriveMotorGroup.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
   rightDriveMotorGroup.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
   
     /** Configure the m_leftFront motor by applying a configuration represented by
     * the leftConfiguration object through a configurator retrieved using the
     * getConfigurator() method. */
+
   m_leftLeader.getConfigurator().apply(leftDriveMotorGroup);
   m_leftFollower.getConfigurator().apply(leftDriveMotorGroup);
   m_rightLeader.getConfigurator().apply(rightDriveMotorGroup);
@@ -81,6 +85,7 @@ public class DriveSubsystem extends SubsystemBase {
     * to match the direction and rotation of the master (or drive in the opposite 
     * direction depending on mechanical orientation)). NOTE: MotorControllerGroup() is
     * deprecated as of 2024 */
+
   m_leftFollower.setControl(new Follower(m_leftLeader.getDeviceID(), false));
   m_rightFollower.setControl(new Follower(m_rightLeader.getDeviceID(), false));
 
@@ -89,6 +94,7 @@ public class DriveSubsystem extends SubsystemBase {
 	 ***************************************************/
   // From WPILib - Motor Safety {needed; long explanation in link below}
   // setSafetyEnabled() 
+
   m_leftLeader.setSafetyEnabled(true);
   m_rightLeader.setSafetyEnabled(true);
   
@@ -101,7 +107,8 @@ public class DriveSubsystem extends SubsystemBase {
 	 * DIFFERENTIAL DRIVE
 	 ***************************************************/
   // Problems here - DD doesn't work with TalonFX
-  DifferentialDrive differentialDrive = new DifferentialDrive(leftDriveMotorGroup, rightDriveMotorGroup);
+  
+  DifferentialDrive differentialDrive = new DifferentialDrive(leftDriveMotorGroup::set, rightDriveMotorGroup::set);
   
   /**
    * Example command factory method.
